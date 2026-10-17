@@ -4,8 +4,6 @@ import axios from "axios";
 const port = process.env.PORT || 3000;
 const app = express();
 
-
-
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
@@ -36,10 +34,10 @@ app.get("/search", async (req, res) => {
     const response = await axios.get(
       `https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1&language=en&format=json`,
     ); //to convert search into latitude and longitude
-    if(!response.data.results || response.data.results.length === 0){
-        return res.status(404).json({
-            error : "City not found"
-        });
+    if (!response.data.results || response.data.results.length === 0) {
+      return res.status(404).json({
+        error: "City not found",
+      });
     }
 
     var latitude = response.data.results[0].latitude;
@@ -47,17 +45,17 @@ app.get("/search", async (req, res) => {
     const weatherData = await axios.get(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`,
     ); //to get data from api using that latitude and longitude
-    
-    var unit  = weatherData.data.current_units.temperature_2m;
+
+    var unit = weatherData.data.current_units.temperature_2m;
     var temperature = weatherData.data.current.temperature_2m;
     res.json({
-        temperature,
-        unit
+      temperature,
+      unit,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("API URL:", error.config?.url);
+    console.error("API status:", error.response?.status);
     res.status(500).send("API Failed");
-
   }
 });
 app.listen(port, () => {
