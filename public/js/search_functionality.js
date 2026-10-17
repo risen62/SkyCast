@@ -1,40 +1,27 @@
-var searchForm = document.getElementById("city-search");
-var input = document.getElementById("city-input");
-var display = document.getElementById("temperature");
-var cityDisplay = document.getElementById("city-name");
+const searchForm = document.getElementById("city-search");
+const input = document.getElementById("city-input");
+const display = document.getElementById("temperature");
+const cityDisplay = document.getElementById("city-name");
 
 searchForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-
+  const cityName = input.value.trim();
+  const requestId = ++window.weatherRequestId;
+  if (!cityName) {
+    display.textContent = "Please enter a city name.";
+    return;
+  }
+  cityDisplay.textContent = cityName;
+  display.textContent = "Loading weather…";
   try {
-    var userInput = input.value;
-    var response = await fetch(`/search?city=${encodeURIComponent(userInput)}`);
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        cityDisplay.textContent = "Search Failed"
-        display.textContent = "City Not Found";
-        return;
-      }
-
-      if (response.status === 500) {
-        display.textContent = "Weather API failed";
-        return;
-      }
-
-      display.textContent = "Something went wrong";
-      return;
-    }
-
-    var data = await response.json();
-    var temperature = data.temperature;
-    var unit = data.unit;
-
-    display.textContent = `${temperature} ${unit}`;
-    cityDisplay.textContent = userInput.trim();
-
+    const city = await window.weatherApi.city(cityName);
+    if (requestId !== window.weatherRequestId) return;
+    const data = await window.weatherApi.weather(city.latitude, city.longitude);
+    if (requestId !== window.weatherRequestId) return;
+    cityDisplay.textContent = [city.name, city.country].filter(Boolean).join(", ");
+    display.textContent = `${data.temperature} ${data.unit}`;
   } catch (error) {
-    display.textContent = "Unable to fetch weather. Please try again.";
-    console.error(error);
+    if (requestId !== window.weatherRequestId) return;
+    display.textContent = error.message;
   }
 });
