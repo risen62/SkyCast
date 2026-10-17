@@ -6,13 +6,13 @@ navigator.geolocation.getCurrentPosition(
     var express_response =  await fetch(`/weather?latitude=${latitude}&longitude=${longitude}`);//response body contains status headers body
     var data = await express_response.json();//js object
     var display = document.getElementById("temperature");
-    var sami = `${data.temperature} ${data.unit}`;
-    display.textContent = sami;
+    var temperature = `${data.temperature} ${data.unit}`;
+    display.textContent = temperature;
     
     
 
   },
-  () => { //access denied case
-
+  (error) => { //access denied case
+    document.getElementById("temperature").textContent = "Unable to detect your location";
   },
 );

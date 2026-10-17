@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css"></link>
+    <title>SkyCast - Weather App</title>
+  </head>
 
-   
-    <h1 id = "temperature"></h1>
-    
+  <body>
+    <div class="container">
+      <header class="header-section">
+        <h1>SkyCast</h1>
+      </header>
+
+      <section class="search-section">
+        <form action="/search" method="get" id="city-search">
+          <input
+            type="text"
+            placeholder="Enter the city name"
+            id="city-input"
+            name="city"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </section>
+
+      <section class="weather-card">
+        <h1 id="city-name">Current Location</h1>
+        <h1 id="temperature"></h1>
+      </section>
+    </div>
+
     <script src="/js/location.js"></script>
-</body>
+    <script src="/js/search_functionality.js"></script>
+  </body>
 </html>
